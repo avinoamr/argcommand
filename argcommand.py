@@ -44,9 +44,6 @@ class Command( object ):
 
     # list of Command classes that should be included in this Command
     subcommands = []
-    
-    # the parser instance that is associated with this command
-    _parser = None
 
     # abstract method, needs to be implemented by the concrete Command classes
     def run( self ):
@@ -72,14 +69,11 @@ class Command( object ):
     # converts this class definition to an argparse ArgumentParser instance, including its entire subparsers tree
     @classmethod
     def _configure( cls, parser = None ):
-        if cls.parser is not None:
-            return cls.parser # configure only once
         
         # create the parser
         if parser is None:
             desc = getattr( cls, "command_description", cls.__doc__ )
-            parser = CommandParser( description = desc, command = cls )
-        cls.parser = parser
+            parser = CommandParser( description = desc, data = { "command": cls } )
 
         # add the command arguments to this parser
         for name, arg in cls.getargs():
@@ -95,9 +89,9 @@ class Command( object ):
 
             # create the subparser
             name = getattr( Subcommand, "command_name", Subcommand.__name__.lower() )
-            desc = getattr( Subcommand, "command_description", Subcommand.__doc__ )
+            desc = getattr( Subcommand, "command_description", Subcommand.__doc__.strip() )
 
-            subparser = sub.add_parser( name, help = desc, description = desc, command = Subcommand )
+            subparser = sub.add_parser( name, help = desc, description = desc, data = { "command": Subcommand } )
             Subcommand._configure( subparser )
 
         return parser
@@ -106,9 +100,9 @@ class Command( object ):
     @classmethod
     def execute( cls, *args ):
         """ Process the command-line arguments and run the relevant Command """
-        cls._configure()
-        parsed = cls.parser.parse_args( *args )
-        Command = parsed.command
+        parser = cls._configure()
+        parsed = parser.parse_args( *args )
+        Command = parsed.data[ "command" ]
         Command( parsed ).run()
 
 ##
@@ -167,7 +161,8 @@ class CommandParser( argparse.ArgumentParser ):
     def parse_known_args( self, *args, **kargs ):
         namespace, arg_strings = super( CommandParser, self ).parse_known_args( *args, **kargs )
 
-        if not hasattr( namespace, "_data" ):
-            namespace.data = self._data
+        # assign the data only if it wasn't already assigned by a different Command
+        if not hasattr( namespace, "data" ):
+            setattr( namespace, "data", self._data )
 
         return namespace, arg_strings
