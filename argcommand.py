@@ -1,6 +1,6 @@
 ## 
 ## argcommand
-## A Python module that provides simple OOP abstraction layer for creating command-line interfaces.
+## A Python module that provides simple object-oriented abstraction layer for creating command-line interfaces. 
 ## https://github.com/avinoamr/argcommand
 ## 
 ## Read README.md for usage documentation
@@ -50,14 +50,14 @@ class Command( object ):
         raise NotImplementedError
 
     # 
-    def __init__( self, args ):
+    def __init__( self, **kargs ):
         """
         Command constructor, replaces the instance's arguments with their values. You should never instantiate 
         Command classes on your own, but use the Command .execute() method instead.
         """
-        self.args = args
+        self.args = kargs
         for name, arg in self.__class__.getargs():
-            setattr( self, name, getattr( args, arg.name ) )    
+            setattr( self, name, kargs[ arg.name ] )
 
     # 
     @classmethod
@@ -91,7 +91,8 @@ class Command( object ):
 
             # create the subparser
             name = getattr( Subcommand, "command_name", Subcommand.__name__.lower() )
-            desc = getattr( Subcommand, "command_description", Subcommand.__doc__.strip() )
+            desc = getattr( Subcommand, "command_description", Subcommand.__doc__ ) or ""
+            desc = desc.strip()
 
             subparser = sub.add_parser( name, help = desc, description = desc, data = { "command": Subcommand } )
             Subcommand._configure( subparser )
@@ -105,7 +106,7 @@ class Command( object ):
         parser = cls._configure()
         parsed = parser.parse_args( *args )
         Command = parsed.data[ "command" ]
-        Command( parsed ).run()
+        Command( **vars( parsed ) ).run()
 
 ##
 class Argument( object ):
