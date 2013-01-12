@@ -55,7 +55,9 @@ class Command( object ):
         Command constructor, replaces the instance's arguments with their values. You should never instantiate 
         Command classes on your own, but use the Command .execute() method instead.
         """
-        pass    
+        self.args = args
+        for name, arg in self.__class__.getargs():
+            setattr( self, name, getattr( args, arg.name ) )    
 
     # 
     @classmethod
