@@ -5,7 +5,7 @@ A Python module that provides simple object-oriented abstraction layer for creat
 
 ## Getting Started 
 
-After installing the `argcommand` module somewhere on your system, begin by subclassing the `argcommand.Command` class that represents a command that needs to be executed from the command line, and calling the `.execute()`:
+After installing the `argcommand` module, begin by subclassing the `argcommand.Command` class that represents a command that needs to be executed from the command line, and calling the `.execute()`:
 
 ```python
 import argcommand
@@ -17,7 +17,7 @@ if "__main__" == __name__:
     Say.execute()
 ```
 
-The call to the `.execute()` **class-method** will attempt to parse command line arguments and run the Say command. We can test it now by running this example from the command line (with the `-h` argument:
+The call to the `.execute()` **class-method** will attempt to parse command line arguments and run the `Say` command. We can test it now by running this example from the command line (with the `-h` argument):
 
 ```
 $ python test.py -h
@@ -37,7 +37,7 @@ class Say( argcommand.Command ):
         print "Something"
 ```
 
-That's it. Executing the say command will invoke its `.run()` method:
+That's it. Executing the `Say` command will invoke its `.run()` method:
 
 ```
 $ python test.py
@@ -50,7 +50,8 @@ Of course that's a lot of overhead for such a simple task. It gets more interest
 
 ```python
 class Say( argcommand.Command ):
-
+    """ Prints a message to the screen """
+    
     what = argcommand.Argument( "WORD", default = "Something", help = "the text you want to print" )
     times = argcommand.Argument( "--times", "-t", type = int, default = 1, metavar = "T", 
                                  help = "how many times you want to repeat the text" )
@@ -60,11 +61,15 @@ class Say( argcommand.Command ):
 
 The `Argument` class represents a command-line argument. It simply forwards its arguments to the `ArgumentParser.add_argument` method of the `argparse` built-in library. <a href="http://docs.python.org/2/library/argparse.html#the-add-argument-method">Read the argparse docs for the complete API specification</a>.
 
+> Notice that we changed the docstring of the `Say` class. This string will be used as the command description in the help message. You can override this behavior by setting `Command.command_description` to be any other string of your choice.
+
 Since we didn't change the `.run()` method (we'll do that in a bit) the command will produce the same results. However, it now supports two arguments (one required positional, and one named optional). This is reflected in the command's help message:
 
 ```
 $ python test.py -h
 usage: test.py [-h] [--times T] WORD
+
+Prints a message to the screen
 
 positional arguments:
   WORD             the text you want to print
@@ -97,7 +102,8 @@ Sometimes we'll want to break down complex commands into several separate ones (
 import argparse
 
 class FirstLine( argcommand.Command ):
-
+    """ Prints the first line of any file in the input """
+    
     files = argcommand.Argument( "FILE", type = argparse.FileType( "r" ), nargs = "+",
                                  help = "The files to read" )
 
@@ -105,8 +111,6 @@ class FirstLine( argcommand.Command ):
         for file_ in self.files:
             print file_.readline()
 ```
-
-This command will read the first line of every file passed as a command-line argument. Read more about <a href="http://docs.python.org/2/library/argparse.html#argparse.FileType">argparse.FileType</a>.
 
 Now, we'll need to define both `Say` and `FirstLine` classes as subcommands of a single parent Command object:
 
@@ -135,3 +139,5 @@ argcommand
 ```
 
 Calling `test.py say -h` will print the the help message of the `Say` subcommand.
+
+> Notice that the command-line name is similar to the Command class name lowered cased. You can override this behavior by setting `Command.command_name` to be any other string of your choice
