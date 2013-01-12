@@ -3,6 +3,7 @@ import argparse
 
 ##
 class Say( argcommand.Command ):
+    """ Prints a message to the screen """
 
     what = argcommand.Argument( "WORD", default = "Something", help = "the text you want to print" )
     times = argcommand.Argument( "--times", "-t", type = int, default = 1, metavar = "T", help = "how many times you want to repeat the text" )
@@ -12,6 +13,7 @@ class Say( argcommand.Command ):
         print self.times * self.what
 
 class FirstLine( argcommand.Command ):
+    """ Prints the first line of any file in the input """
 
     files = argcommand.Argument( "FILE", type = argparse.FileType( "r" ), nargs = "+",
                                  help = "The files to read" )
