@@ -5,7 +5,7 @@ A Python module that provides simple object-oriented abstraction layer for creat
 
 ## Getting Started 
 
-After installing the `argcommand` module somewhere on your system, begin by subclassing the `argcommand.Command` class that represents a command that needs to be executed from the command line, and calling the `.execute()`:
+After installing the `argcommand` module, begin by subclassing the `argcommand.Command` class that represents a command that needs to be executed from the command line, and calling the `.execute()`:
 
 ```python
 import argcommand
@@ -17,7 +17,7 @@ if "__main__" == __name__:
     Say.execute()
 ```
 
-The call to the `.execute()` **class-method** will attempt to parse command line arguments and run the Say command. We can test it now by running this example from the command line (with the `-h` argument:
+The call to the `.execute()` **class-method** will attempt to parse command line arguments and run the `Say` command. We can test it now by running this example from the command line (with the `-h` argument):
 
 ```
 $ python test.py -h
