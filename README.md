@@ -1,7 +1,7 @@
 argcommand
 ==========
 
-A Python module that provides simple OOP abstraction layer for creating command-line interfaces. 
+A Python module that provides simple object-oriented abstraction layer for creating command-line interfaces. 
 
 ## Getting Started 
 
