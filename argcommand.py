@@ -50,11 +50,17 @@ class Command( object ):
         raise NotImplementedError
 
     # 
-    def __init__( self, **kargs ):
+    def __init__( self, cli_args = None, **kargs ):
         """
         Command constructor, replaces the instance's arguments with their values. You should never instantiate 
         Command classes on your own, but use the Command .execute() method instead.
         """
+
+        # support textual cli arguments
+        if cli_args is not None:
+            parser = self._configure()
+            kargs.update( vars( parser.parse_args( cli_args.split() ) ) )
+        
         self.args = kargs
         for name, arg in self.__class__.getargs():
             setattr( self, name, kargs[ arg.name ] )
