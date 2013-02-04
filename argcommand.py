@@ -1,10 +1,13 @@
+"""
+A Python module that provides simple object-oriented abstraction layer for creating command-line interfaces.  
+
+Read README.md for usage documentation
+"""
+
 ## 
 ## argcommand
-## A Python module that provides simple object-oriented abstraction layer for creating command-line interfaces. 
 ## https://github.com/avinoamr/argcommand
 ## 
-## Read README.md for usage documentation
-##
 ## This module was orginally developed at Win (win.com) by:
 ##  Roi Avinoam <avinoamr@gmail.com>
 ##  Oran Ben Zur <oranb83@gmail.com>
@@ -35,6 +38,8 @@
 
 import argparse
 import inspect
+
+__version__ = "0.1"
 
 ##
 class Command( object ):
