@@ -179,3 +179,8 @@ class CommandParser( argparse.ArgumentParser ):
             setattr( namespace, "data", self._data )
 
         return namespace, arg_strings
+
+## convinient boolean conversion type that accepts boolean-like strings (yes, true, on)
+def bool( value ):
+    value = str( value ).lower().strip()
+    return value in [ "true", "yes", "on", "1" ]
