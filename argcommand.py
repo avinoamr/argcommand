@@ -38,7 +38,7 @@ Read README.md for usage documentation
 import argparse
 import inspect
 
-__version__ = "0.1"
+__version__ = "0.2"
 
 ##
 class Command( object ):
